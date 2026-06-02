@@ -205,6 +205,18 @@
             transform: scale(1.02);
         }
 
+        /* CLASSES PARA ARRASTAR ABAS */
+        .tab-btn.dragging-tab {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+        .tab-btn.drop-tab-before {
+            border-left: 4px solid #3b82f6;
+        }
+        .tab-btn.drop-tab-after {
+            border-right: 4px solid #3b82f6;
+        }
+
         /* CONTEÚDO DA ABA */
         .tab-content-pane {
             padding: 24px 28px;
@@ -438,6 +450,8 @@
         indexOrigem: null
     };
 
+    let dragSourceTab = null; // Controle para arrastar as abas
+
     function gerarId() {
         return Date.now() + '-' + Math.random().toString(36).substr(2, 6);
     }
@@ -653,16 +667,12 @@
         const datalist = document.getElementById('atalhosSalvos');
         if (!datalist) return;
         
-        // Limpa a lista atual
         datalist.innerHTML = '';
-        
-        // Coleta todos os nomes únicos de atalhos em todas as abas
         const nomesUnicos = new Set();
         abas.forEach(aba => {
             aba.shortcuts.forEach(s => nomesUnicos.add(s.nome));
         });
         
-        // Adiciona os nomes como opções no datalist
         nomesUnicos.forEach(nome => {
             const option = document.createElement('option');
             option.value = nome;
@@ -673,31 +683,90 @@
     function renderizarAbasHeader() {
         const container = document.getElementById('tabsBar');
         container.innerHTML = '';
-        abas.forEach(aba => {
+        abas.forEach((aba, index) => {
             const btn = document.createElement('button');
             btn.className = `tab-btn ${activeTabId === aba.id ? 'active' : ''}`;
             btn.innerHTML = `${escapeHtml(aba.nome)} <span style="font-size:0.7rem;">📌</span>`;
+            
+            // Permite arrastar o botão da aba
+            btn.draggable = true;
+            btn.setAttribute('data-aba-id', aba.id);
+            
             btn.onclick = (e) => {
                 e.preventDefault();
                 activeTabId = aba.id;
                 salvarDados();
                 renderizarInterface();
             };
-            btn.setAttribute('data-aba-id', aba.id);
+            
+            // EVENTOS DE DRAG PARA A ABA
+            btn.addEventListener('dragstart', (e) => {
+                dragSourceTab = index;
+                e.dataTransfer.effectAllowed = 'move';
+                btn.classList.add('dragging-tab');
+            });
+
+            btn.addEventListener('dragend', () => {
+                dragSourceTab = null;
+                btn.classList.remove('dragging-tab');
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('drop-active', 'drop-tab-before', 'drop-tab-after');
+                });
+            });
+
             btn.addEventListener('dragover', (e) => {
                 e.preventDefault();
-                btn.classList.add('drop-active');
+                if (dragSourceTab !== null) {
+                    const rect = btn.getBoundingClientRect();
+                    const meio = rect.width / 2;
+                    const x = e.clientX - rect.left;
+                    
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('drop-tab-before', 'drop-tab-after'));
+                    
+                    if (x < meio) {
+                        btn.classList.add('drop-tab-before');
+                    } else {
+                        btn.classList.add('drop-tab-after');
+                    }
+                } else {
+                    btn.classList.add('drop-active');
+                }
             });
-            btn.addEventListener('dragleave', () => btn.classList.remove('drop-active'));
+
+            btn.addEventListener('dragleave', () => {
+                btn.classList.remove('drop-active', 'drop-tab-before', 'drop-tab-after');
+            });
+
             btn.addEventListener('drop', (e) => {
                 e.preventDefault();
-                btn.classList.remove('drop-active');
-                if (!dragSource.abaId || !dragSource.shortcutId) return;
-                moverAtalhoParaAba(dragSource.shortcutId, dragSource.abaId, aba.id, null);
-                dragSource = { abaId: null, shortcutId: null, indexOrigem: null };
+                btn.classList.remove('drop-active', 'drop-tab-before', 'drop-tab-after');
+
+                if (dragSourceTab !== null) {
+                    const rect = btn.getBoundingClientRect();
+                    const meio = rect.width / 2;
+                    const x = e.clientX - rect.left;
+                    
+                    let toIndex = index;
+                    if (x >= meio) toIndex++; 
+
+                    if (dragSourceTab < toIndex) toIndex--;
+
+                    if (dragSourceTab !== toIndex) {
+                        const abaMovida = abas.splice(dragSourceTab, 1)[0];
+                        abas.splice(toIndex, 0, abaMovida);
+                        salvarDados();
+                        renderizarInterface();
+                    }
+                    dragSourceTab = null;
+                } else if (dragSource.abaId && dragSource.shortcutId) {
+                    moverAtalhoParaAba(dragSource.shortcutId, dragSource.abaId, aba.id, null);
+                    dragSource = { abaId: null, shortcutId: null, indexOrigem: null };
+                }
             });
+
             container.appendChild(btn);
         });
+
         const addBtn = document.createElement('button');
         addBtn.className = 'tab-btn add-tab-btn';
         addBtn.innerHTML = '+ Nova Aba';
@@ -723,8 +792,11 @@
                     <h2>${escapeHtml(aba.nome)}</h2>
                     <button class="edit-name-btn" id="renameTabBtn" title="Renomear aba">✏️</button>
                     <button class="delete-tab-btn" id="deleteTabBtn" title="Remover aba">🗑️</button>
+                    <span style="color: #cbd5e1; margin: 0 4px;">|</span>
+                    <button class="edit-name-btn" id="moveTabLeftBtn" title="Mover aba para a esquerda">⬅️</button>
+                    <button class="edit-name-btn" id="moveTabRightBtn" title="Mover aba para a direita">➡️</button>
                 </div>
-                <div style="font-size:12px; color:#475569;">✨ Arraste atalhos: reordene na lista ou solte sobre outra aba (no botão da aba)</div>
+                <div style="font-size:12px; color:#475569;">✨ Arraste atalhos: reordene na lista ou solte sobre outra aba. Arraste as abas lá em cima ou use as setas ⬅️➡️ para reordená-las.</div>
             </div>
             <div class="shortcuts-section">
                 <div class="filter-shortcuts">
@@ -758,6 +830,7 @@
         `;
         container.innerHTML = html;
 
+        // Eventos dos botões de Renomear e Excluir
         document.getElementById('renameTabBtn')?.addEventListener('click', () => {
             const novoNome = prompt('Novo nome:', aba.nome);
             if (novoNome?.trim()) renomearAba(aba.id, novoNome.trim());
@@ -765,6 +838,29 @@
         document.getElementById('deleteTabBtn')?.addEventListener('click', () => {
             if (confirm(`Remover aba "${aba.nome}"?`)) deletarAba(aba.id);
         });
+
+        // Eventos dos novos botões de mover a aba para esquerda e direita
+        document.getElementById('moveTabLeftBtn')?.addEventListener('click', () => {
+            const idx = abas.findIndex(a => a.id === aba.id);
+            if (idx > 0) {
+                const temp = abas[idx];
+                abas[idx] = abas[idx - 1];
+                abas[idx - 1] = temp;
+                salvarDados();
+                renderizarInterface();
+            }
+        });
+        document.getElementById('moveTabRightBtn')?.addEventListener('click', () => {
+            const idx = abas.findIndex(a => a.id === aba.id);
+            if (idx !== -1 && idx < abas.length - 1) {
+                const temp = abas[idx];
+                abas[idx] = abas[idx + 1];
+                abas[idx + 1] = temp;
+                salvarDados();
+                renderizarInterface();
+            }
+        });
+
         const filterInput = document.getElementById('filterShortcutsInput');
         if (filterInput) {
             filterInput.addEventListener('input', (e) => {
@@ -941,7 +1037,7 @@
     }
 
     function renderizarInterface() {
-        atualizarDatalistNomes(); // Popula o autocompletar com os atalhos existentes
+        atualizarDatalistNomes();
         renderizarAbasHeader();
         
         if (activeTabId && abas.find(a => a.id === activeTabId)) renderizarAbaAtivaConteudo();
