@@ -19,7 +19,7 @@
             left: 0;
             width: 100%;
             background: #4169e1; /* Azul Royal */
-            color: #ffffff; /* Ajustado para branco para dar contraste com o azul */
+            color: #ffffff;
             font-size: 0.75rem;
             text-align: center;
             padding: 6px 10px;
@@ -28,10 +28,16 @@
             letter-spacing: 0.3px;
         }
 
+        /* TEMA CLARO (PADRÃO) */
         body {
             background: #f1f5f9;
-            padding: 20px 20px 40px 20px; /* Padding inferior ajustado para o rodapé fixo */
+            padding: 20px 20px 40px 20px;
             min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark-theme {
+            background: #0f172a;
         }
 
         .app {
@@ -41,7 +47,12 @@
             border-radius: 28px;
             box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
             overflow: hidden;
-            transition: all 0.2s;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        body.dark-theme .app {
+            background: #1e293b;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.5);
         }
 
         /* CABEÇALHO GLOBAL + BUSCA GLOBAL */
@@ -50,6 +61,12 @@
             color: white;
             padding: 1rem 1.5rem;
             border-bottom: 1px solid #1e293b;
+            transition: background 0.3s;
+        }
+
+        body.dark-theme .global-header {
+            background: #020617;
+            border-bottom-color: #334155;
         }
 
         .global-header h1 {
@@ -79,6 +96,69 @@
             border-radius: 40px;
             letter-spacing: 0.3px;
             box-shadow: 0 0 0 1px #14b8a6;
+        }
+
+        /* HEADER ACTIONS (TEMA + DATA/HORA) */
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .datetime-container {
+            background: #1e293b;
+            padding: 8px 16px;
+            border-radius: 60px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .datetime-container {
+            background: #0f172a;
+            color: #cbd5e1;
+        }
+
+        .datetime-container .date {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .datetime-container .time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .theme-toggle {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #facc15;
+            padding: 8px 16px;
+            border-radius: 60px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: #334155;
+            transform: scale(1.02);
+        }
+
+        body.dark-theme .theme-toggle {
+            background: #0f172a;
+            border-color: #475569;
+            color: #fbbf24;
         }
 
         .global-search-area {
@@ -180,6 +260,12 @@
             gap: 4px;
             padding: 12px 20px 0 20px;
             border-bottom: 1px solid #e2e8f0;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        body.dark-theme .tabs-bar {
+            background: #0f172a;
+            border-bottom-color: #334155;
         }
 
         .tab-btn {
@@ -199,6 +285,11 @@
             user-select: none;
         }
 
+        body.dark-theme .tab-btn {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
         .tab-btn.active {
             background: white;
             color: #2563eb;
@@ -206,13 +297,25 @@
             box-shadow: 0 -2px 5px rgba(0,0,0,0.02);
         }
 
+        body.dark-theme .tab-btn.active {
+            background: #1e293b;
+            color: #60a5fa;
+            border-bottom-color: #60a5fa;
+        }
+
         .tab-btn:hover:not(.active) { background: #e2e8f0; }
+        body.dark-theme .tab-btn:hover:not(.active) { background: #475569; }
 
         .add-tab-btn {
             background: #d9f99d;
             color: #3f6212;
             margin-left: 8px;
             font-weight: bold;
+        }
+
+        body.dark-theme .add-tab-btn {
+            background: #4d7c0f;
+            color: #d9f99d;
         }
 
         .tab-btn.drop-active {
@@ -237,7 +340,11 @@
         .tab-content-pane {
             padding: 24px 28px;
             background: #ffffff;
-            transition: 0.1s;
+            transition: background 0.3s;
+        }
+
+        body.dark-theme .tab-content-pane {
+            background: #1e293b;
         }
 
         .tab-header-actions {
@@ -251,6 +358,10 @@
             border-bottom: 2px solid #eef2ff;
         }
 
+        body.dark-theme .tab-header-actions {
+            border-bottom-color: #334155;
+        }
+
         .tab-title-area {
             display: flex;
             align-items: center;
@@ -260,10 +371,18 @@
             border-radius: 60px;
         }
 
+        body.dark-theme .tab-title-area {
+            background: #0f172a;
+        }
+
         .tab-title-area h2 {
             font-size: 1.35rem;
             font-weight: 600;
             color: #0f172a;
+        }
+
+        body.dark-theme .tab-title-area h2 {
+            color: #f1f5f9;
         }
 
         .edit-name-btn, .delete-tab-btn {
@@ -277,8 +396,10 @@
         }
 
         .edit-name-btn:hover { background: #e2e8f0; }
+        body.dark-theme .edit-name-btn:hover { background: #334155; }
         .delete-tab-btn { color: #dc2626; }
         .delete-tab-btn:hover { background: #fee2e2; }
+        body.dark-theme .delete-tab-btn:hover { background: #7f1d1d; }
 
         .shortcuts-section { width: 100%; }
 
@@ -290,6 +411,13 @@
             border-radius: 40px;
             font-size: 0.85rem;
             outline: none;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        body.dark-theme .filter-shortcuts input {
+            background: #0f172a;
+            border-color: #475569;
+            color: #e2e8f0;
         }
 
         .shortcuts-list {
@@ -306,6 +434,10 @@
             border-radius: 20px;
         }
 
+        body.dark-theme .shortcuts-list {
+            background: #1e293b;
+        }
+
         .shortcut-item {
             background: #f8fafc;
             border-radius: 60px;
@@ -318,6 +450,13 @@
             cursor: grab;
             user-select: none;
         }
+
+        body.dark-theme .shortcut-item {
+            background: #0f172a;
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+
         .shortcut-item:active { cursor: grabbing; }
         .shortcut-item.dragging {
             opacity: 0.4;
@@ -327,6 +466,10 @@
         .shortcut-item:hover {
             background: #eef2ff;
             transform: scale(0.99);
+        }
+
+        body.dark-theme .shortcut-item:hover {
+            background: #334155;
         }
 
         .shortcut-link {
@@ -339,6 +482,10 @@
             align-items: center;
             gap: 10px;
             overflow: hidden;
+        }
+
+        body.dark-theme .shortcut-link {
+            color: #93c5fd;
         }
 
         .shortcut-link strong {
@@ -373,11 +520,21 @@
             padding: 18px;
             border-radius: 28px;
         }
+
+        body.dark-theme .add-shortcut-form {
+            background: #0f172a;
+        }
+
         .add-shortcut-form h4 {
             font-size: 0.9rem;
             margin-bottom: 12px;
             font-weight: 600;
         }
+
+        body.dark-theme .add-shortcut-form h4 {
+            color: #e2e8f0;
+        }
+
         .form-row {
             display: flex;
             flex-wrap: wrap;
@@ -390,6 +547,13 @@
             border: 1px solid #cbd5e1;
             background: white;
         }
+
+        body.dark-theme .form-row input {
+            background: #1e293b;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+
         .form-row button {
             background: #0f172a;
             color: white;
@@ -400,6 +564,10 @@
             cursor: pointer;
         }
 
+        body.dark-theme .form-row button {
+            background: #3b82f6;
+        }
+
         .empty-msg {
             text-align: center;
             color: #94a3b8;
@@ -407,6 +575,11 @@
             background: #f8fafc;
             border-radius: 40px;
             grid-column: 1 / -1;
+        }
+
+        body.dark-theme .empty-msg {
+            background: #0f172a;
+            color: #64748b;
         }
 
         button { transition: all 0.1s ease; }
@@ -424,6 +597,8 @@
         @media (max-width: 750px) {
             .tab-content-pane { padding: 16px; }
             .shortcuts-list { grid-template-columns: 1fr; }
+            .header-actions { flex-direction: column; align-items: stretch; }
+            .datetime-container { text-align: center; }
         }
     </style>
 </head>
@@ -436,6 +611,17 @@
             <small>arraste para reordenar ou mover abas</small>
             <span class="save-badge">✅ salvo DN LINK</span>
         </h1>
+        
+        <div class="header-actions">
+            <div class="datetime-container" id="datetimeContainer">
+                <div class="date" id="currentDate">--/--/----</div>
+                <div class="time" id="currentTime">--:--:--</div>
+            </div>
+            <button class="theme-toggle" id="themeToggleBtn" title="Alternar tema claro/escuro">
+                🌓 Alternar Tema
+            </button>
+        </div>
+
         <div class="global-search-area">
             <input type="text" id="globalSearchInput" list="atalhosSalvos" placeholder="🔍 Buscar em TODOS os atalhos (por nome ou url) ..." autocomplete="off">
             <datalist id="atalhosSalvos"></datalist>
@@ -474,6 +660,53 @@
     };
 
     let dragSourceTab = null; // Controle para arrastar as abas
+
+    // Tema: carregar preferência salva
+    let currentTheme = localStorage.getItem('app_theme') || 'light';
+
+    function applyTheme() {
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+        }
+        localStorage.setItem('app_theme', currentTheme);
+    }
+
+    function toggleTheme() {
+        currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+        applyTheme();
+    }
+
+    // Função para atualizar data e hora de Brasília
+    function updateDateTime() {
+        const dateElement = document.getElementById('currentDate');
+        const timeElement = document.getElementById('currentTime');
+        
+        if (!dateElement || !timeElement) return;
+        
+        // Usa o timezone de Brasília (UTC-3)
+        const now = new Date();
+        const optionsDate = { 
+            timeZone: 'America/Sao_Paulo',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        };
+        const optionsTime = { 
+            timeZone: 'America/Sao_Paulo',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        };
+        
+        const brasiliaDate = new Intl.DateTimeFormat('pt-BR', optionsDate).format(now);
+        const brasiliaTime = new Intl.DateTimeFormat('pt-BR', optionsTime).format(now);
+        
+        dateElement.textContent = brasiliaDate;
+        timeElement.textContent = brasiliaTime;
+    }
 
     function gerarId() {
         return Date.now() + '-' + Math.random().toString(36).substr(2, 6);
@@ -696,7 +929,6 @@
             aba.shortcuts.forEach(s => nomesUnicos.add(s.nome));
         });
         
-        // Converte o Set para Array e ordena de A a Z
         const nomesOrdenados = Array.from(nomesUnicos).sort((a, b) => a.localeCompare(b, 'pt-BR'));
         
         nomesOrdenados.forEach(nome => {
@@ -714,7 +946,6 @@
             btn.className = `tab-btn ${activeTabId === aba.id ? 'active' : ''}`;
             btn.innerHTML = `${escapeHtml(aba.nome)} <span style="font-size:0.7rem;">📌</span>`;
             
-            // Permite arrastar o botão da aba
             btn.draggable = true;
             btn.setAttribute('data-aba-id', aba.id);
             
@@ -725,7 +956,6 @@
                 renderizarInterface();
             };
             
-            // EVENTOS DE DRAG PARA A ABA
             btn.addEventListener('dragstart', (e) => {
                 dragSourceTab = index;
                 e.dataTransfer.effectAllowed = 'move';
@@ -856,7 +1086,6 @@
         `;
         container.innerHTML = html;
 
-        // Eventos dos botões de Renomear e Excluir
         document.getElementById('renameTabBtn')?.addEventListener('click', () => {
             const novoNome = prompt('Novo nome:', aba.nome);
             if (novoNome?.trim()) renomearAba(aba.id, novoNome.trim());
@@ -865,7 +1094,6 @@
             if (confirm(`Remover aba "${aba.nome}"?`)) deletarAba(aba.id);
         });
 
-        // Eventos dos novos botões de mover a aba para esquerda e direita
         document.getElementById('moveTabLeftBtn')?.addEventListener('click', () => {
             const idx = abas.findIndex(a => a.id === aba.id);
             if (idx > 0) {
@@ -893,8 +1121,6 @@
                 tabFilters[activeTabId] = e.target.value;
                 salvarDados();
                 renderizarAbaAtivaConteudo();
-                
-                // Lógica adicionada para manter o foco e a posição do cursor na digitação
                 const nextInput = document.getElementById('filterShortcutsInput');
                 if (nextInput) {
                     nextInput.focus();
@@ -1093,8 +1319,16 @@
         return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m] || m));
     }
 
+    // Inicialização
     carregarDados();
+    applyTheme();
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
     renderizarInterface();
+    
+    // Evento do botão de tema
+    document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
+    
     window.addEventListener('beforeunload', () => salvarDados());
 </script>
 </body>
